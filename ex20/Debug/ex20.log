@@ -1,7 +1,0 @@
-﻿  소스.cpp
-C:\Users\82104\Downloads\ex20\소스.cpp(4,1): error C4430: 형식 지정자가 없습니다. int로 가정합니다. 참고: C++에서는 기본 int를 지원하지 않습니다.
-C:\Users\82104\Downloads\ex20\소스.cpp(6,61): error C2440: '초기화 중': 'const char [4]'에서 'char *'(으)로 변환할 수 없습니다.
-C:\Users\82104\Downloads\ex20\소스.cpp(6,22): message : 문자열 리터럴로부터의 변환은 const 한정자가 손실됩니다(/Zc:strictStrings 참조).
-C:\Users\82104\Downloads\ex20\소스.cpp(6,61): error C2440: '초기화 중': 'const char [5]'에서 'char *'(으)로 변환할 수 없습니다.
-C:\Users\82104\Downloads\ex20\소스.cpp(6,34): message : 문자열 리터럴로부터의 변환은 const 한정자가 손실됩니다(/Zc:strictStrings 참조).
-C:\Users\82104\Downloads\ex20\소스.cpp(11,5): error C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.

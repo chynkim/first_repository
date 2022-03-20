@@ -6,7 +6,7 @@ int main()
 {
 	int arr[6], i;
 
-	printf("숫자를 입력하세요 : ");
+	printf("enter numbrers : ");
 
 	for (i = 0; i < 6; i++)
 		scanf_s("%d", &arr[i]);

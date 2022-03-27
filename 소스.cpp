@@ -6,7 +6,7 @@ int main()
 	int arr[6], i, j, n, t, sw;
 	n = 6;
 
-	printf("¼ıÀÚ¸¦ 6°³ ÀÔ·ÂÇÏ¼¼¿ä : ");
+	printf("6ê°œì˜ ìˆ˜ë¥¼ ì…ë ¥í•˜ì„¸ìš” : ");
 
 	for(i=0; i<n; i++)
 		scanf_s("%d", &arr[i]);

@@ -1,0 +1,58 @@
+#include <stdio.h>
+#define _CRT_SECURE_NO_WARNINGS
+void func(int i, int* parr1, int(*parr2)[3], int* parr3);
+void solution(int n, int* parr);
+
+int main()
+{
+	int arr1[100], arr2[50][3], arr3[50], i, n, num; //arr1은 array, arr2는 commands, arr3은 return값
+
+	printf("array의 길이를 입력하세요.(1이상 100이하) : ");
+	scanf_s("%d", &n);
+
+	printf("array의 각 원소를 입력하세요.(1이상 100이하의 수) : ");
+	for (i = 0; i < n; i++)
+		scanf_s("%d", &arr1[i]);
+
+	printf("commands의 길이를 입력하세요.(1이상 100이하) : ");
+	scanf_s("%d", &num);
+
+	for (i = 0; i < num; i++) {
+		printf("%d번째 command의 원소 3개를 입력하세요 : ", i+1);
+		scanf_s("%d %d %d", &arr2[i][0], &arr2[i][1], &arr2[i][2]);
+	}
+
+	for(i=0; i<num; i++)
+		func(i, arr1, arr2, arr3);
+
+	solution(num, arr3);
+}
+
+void func(int i, int* parr1, int(*parr2)[3], int* parr3) //array를 command에 따라 정렬후 해당번째 숫자 반환하는 함수
+{
+	int parr4[100] = {0};
+	int n = parr2[i][1] - parr2[i][0] + 1;
+	int b = parr2[i][0];
+	int a = parr2[i][2];
+
+	for (int j = 0; j < n; j++)
+		parr4[j] = parr1[b + j-1];
+
+	for (int k = 0; k < n-1; k++)
+		for (int j = k+1; j < n; j++)
+			if (parr4[k] > parr4[j]) {
+				int t = parr4[k];
+				parr4[k] = parr4[j];
+				parr4[j] = t;
+			}
+
+	parr3[i] = parr4[a-1];
+}
+
+void solution(int n, int *parr) //return값 한번에 출력하는 함수
+{
+	printf("[");
+	for (int i = 0; i < n; i++)
+		printf("%2d", parr[i]);
+	printf("]");
+}

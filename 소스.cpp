@@ -1,33 +1,209 @@
-#include <stdio.h>
 #define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-int main()
-{	
-	int arr[6], i, j, n, t, sw;
-	n = 6;
+struct BOOK {
+    char book_name[100];
+    char auth_name[100];
+    int year[100];
+    char publ_name[100];
+    char genre[100];
+    int borrowed;
+};
 
-	printf("6ê°œì˜ ìˆ˜ë¥¼ ì…ë ¥í•˜ì„¸ìš” : ");
+typedef struct BOOK BOOK;
+int register_book(BOOK* book_list, int* nth);
+int search_book(BOOK* book_list, int total_num_book);
+int change_book(BOOK* book_list);
+int remove_book(BOOK* book_list);
+int print_book_list(BOOK* book_list, int total_num_book);
+int save_book_list(BOOK** book_list, int* total_num_book);
+char compare(char* str1, char* str2);
 
-	for(i=0; i<n; i++)
-		scanf_s("%d", &arr[i]);
+int main() {
+    int user_choice;        /* À¯Àú°¡ ¼±ÅÃÇÑ ¸Ş´º */
+    int num_total_book = 0; /* ÇöÀç Ã¥ÀÇ ¼ö */
 
-	for (i = 0; i < n - 1; i++) {
-		sw = 0;
-		for (j = 1; j < n ; j++)
-			if (arr[j - 1] > arr[j]) {
-				t = arr[j - 1];
-				arr[j - 1] = arr[j];
-				arr[j] = t;
-				sw = 1;
-			}	
-		if (sw == 0)
-			break;
-	}
-	printf("[");
-	for (i = 0; i < n; i++) {
-		printf("%4d", arr[i]);
-		if (i < n)
-			printf(", ");
-	}
-	printf("]");
+    BOOK* book_list;
+    int i;
+
+    printf("µµ¼­°üÀÇ ÃÖ´ë º¸°ü Àå¼­ ¼ö¸¦ ¼³Á¤ÇØÁÖ¼¼¿ä : ");
+    scanf("%d", &user_choice);
+
+    book_list = (BOOK*)malloc(sizeof(BOOK) * user_choice);
+
+    while (1) {
+        printf("¸Ş´º¸¦ ¼±ÅÃÇÏ¼¼¿ä \n");
+        printf("1. Ã¥À» »õ·Î Ãß°¡ÇÏ±â \n");
+        printf("2. Ã¥À» °Ë»öÇÏ±â \n");
+        printf("3. Ã¥ Á¤º¸ ¼öÁ¤ÇÏ±â \n");
+        printf("4. Ã¥ »èÁ¦ÇÏ±â \n");
+        printf("5. ÇöÀç ÃÑ Ã¥ ¸ñ·Ï Ãâ·ÂÇÏ±â \n");
+        printf("6. Ã¥µéÀÇ ³»¿ëÀ» ÀÔ·ÂÆÄÀÏ¿¡ ÀúÀåÇÏ±â \n");
+        printf("7. ÇÁ·Î±×·¥ ³ª°¡±â \n");
+
+        printf("1~7 Áß ¼±ÅÃÇÏ¼¼¿ä : ");
+        scanf("%d", &user_choice);
+
+        if (user_choice == 1) {
+            /* Ã¥À» »õ·Î Ãß°¡ÇÏ´Â ÇÔ¼ö È£Ãâ */
+            register_book(book_list, &num_total_book);
+        }
+        else if (user_choice == 2) {
+            /* Ã¥À» °Ë»öÇÏ´Â ÇÔ¼ö È£Ãâ */
+            search_book(book_list, num_total_book);
+        }
+        else if (user_choice == 3) {
+            /* Ã¥À» ¼öÁ¤ÇÏ´Â ÇÔ¼ö È£Ãâ */
+            change_book(* book_list);
+        }
+        else if (user_choice == 4) {
+            /* Ã¥À» »èÁ¦ÇÏ´Â ÇÔ¼ö È£Ãâ */
+            remove_book(* book_list);
+        }
+        else if (user_choice == 5) {
+            /* ÇöÀç ÃÑ Ã¥ ¸ñ·ÏÀ» Ãâ·ÂÇÏ´Â ÇÔ¼ö È£Ãâ */
+            print_book_list(* book_list, &num_total_book);
+        }
+        else if (user_choice == 6) {
+            /* book.txt¿¡ ÀúÀåÇÏ´Â ÇÔ¼ö È£Ãâ*/
+            save_book_list(*book_list, num_total_book);
+        }
+        else if (user_choice == 7) {
+            /* ÇÁ·Î±×·¥ ³ª°¡±â */
+            break;
+        }
+    }
+
+    free(book_list);
+    return 0;
 }
+int save_book_list(BOOK* book_list, int total_num_book) {
+    FILE* fp = fopen("book.txt", "w");
+    int i;
+
+    if (fp == NULL) {
+        printf("Ãâ·Â ¿À·ù ! \n");
+        return -1;
+    }
+
+    fprintf(fp, "%d\n", total_num_book);
+
+    for (i = 0; i < total_num_book; i++) {
+        fprintf(fp, "%s\n %s\n %d\n %s\n %s\n", book_list[i].book_name, book_list[i].auth_name, book_list[i].year,
+            book_list[i].publ_name, book_list[i].genre);
+    }
+
+    printf("Ãâ·Â ¿Ï·á! \n");
+    fclose(fp);
+
+    return 0;
+}
+
+
+int retrieve_book_info(BOOK** book_list, int* total_num_book) {
+    FILE* fp = fopen("book.txt", "r");
+    int total_book;
+    int i;
+    char str[10];
+
+    if (fp == NULL) {
+        printf("ÁöÁ¤ÇÑ ÆÄÀÏÀ» Ã£À» ¼ö ¾ø½À´Ï´Ù! \n");
+        return -1;
+    }
+
+    fscanf(fp, "%d", &total_book);
+    (*total_num_book) = total_book;
+
+    free(*book_list);
+
+    (*book_list) = (BOOK*)malloc(sizeof(BOOK) * total_book);
+
+    if (*book_list == NULL) {
+        printf("\n ERROR \n");
+        return -1;
+    }
+    for (i = 0; i < total_book; i++) {
+
+        fscanf(fp, "%s", (*book_list)[i].book_name);
+        fscanf(fp, "%s", (*book_list)[i].auth_name);
+        fscanf(fp, "%d", (*book_list)[i].year);
+        fscanf(fp, "%s", (*book_list)[i].publ_name);
+        fscanf(fp, "%s", (*book_list)[i].genre);
+        fscanf(fp, "%s", str);
+    }
+
+    fclose(fp);
+    return 0;
+}
+/* Ã¥À» Ãß°¡ÇÏ´Â ÇÔ¼ö*/
+int register_book(BOOK* book, int* nth) {
+    printf("Ã¥ÀÇ ÀÌ¸§ : ");
+    scanf("%s", book[*nth].book_name);
+
+    printf("Ã¥ÀÇ ÀúÀÚ : ");
+    scanf("%s", book[*nth].auth_name);
+
+    printf("ÃâÆÇ¿¬µµ : ");
+    scanf("%d", book[*nth].year);
+
+    printf("Ã¥ÀÇ ÃâÆÇ»ç : ");
+    scanf("%s", book[*nth].publ_name);
+
+    printf("Àå¸£ : ");
+    scanf("%s", book[*nth].genre);
+
+    (*nth)++;
+
+    return 0;
+}
+/* Ã¥À» °Ë»öÇÏ´Â ÇÔ¼ö */
+int search_book(BOOK* book_list, int total_num_book) {
+    int user_input; /* »ç¿ëÀÚÀÇ ÀÔ·ÂÀ» ¹Ş´Â´Ù. */
+    int i;
+    char user_search[100];
+
+    printf("°Ë»öÇÒ ³»¿ë ¼±ÅÃ \n");
+    printf("1. Ã¥ Á¦¸ñ °Ë»ö \n");
+    printf("2. ÁöÀºÀÌ °Ë»ö \n");
+    printf("3. ÃâÆÇ»ç °Ë»ö \n");
+    scanf("%d", &user_input);
+
+    printf("°Ë»öÇÒ ´Ü¾î¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä : ");
+    scanf("%s", user_search);
+
+    printf("°Ë»ö °á°ú \n");
+
+    if (user_input == 1) {
+        /*
+
+        i °¡ 0 ºÎÅÍ num_total_book ±îÁö °¡¸é¼­ °¢°¢ÀÇ Ã¥ Á¦¸ñÀ»
+        »ç¿ëÀÚ°¡ ÀÔ·ÂÇÑ °Ë»ö¾î¿Í ºñ±³ÇÏ°í ÀÖ´Ù.
+
+        */
+        for (i = 0; i < total_num_book; i++) {
+            if (compare(book_list[i].book_name, user_search)) {
+                printf("¹øÈ£ : %d // Ã¥ ÀÌ¸§ : %s // ÁöÀºÀÌ : %s // ÃâÆÇ»ç : %s \n", i,
+                    book_list[i].book_name, book_list[i].auth_name,
+                    book_list[i].publ_name);
+            }
+        }
+
+    }
+    else if (user_input == 2) {
+        /*
+
+        i °¡ 0 ºÎÅÍ num_total_book ±îÁö °¡¸é¼­ °¢°¢ÀÇ ÁöÀºÀÌ ÀÌ¸§À»
+        »ç¿ëÀÚ°¡ ÀÔ·ÂÇÑ °Ë»ö¾î¿Í ºñ±³ÇÏ°í ÀÖ´Ù.
+
+        */
+        for (i = 0; i < total_num_book; i++) {
+            if (compare(book_list[i].auth_name, user_search)) {
+                printf("¹øÈ£ : %d // Ã¥ ÀÌ¸§ : %s // ÁöÀºÀÌ : %s // ÃâÆÇ»ç : %s \n", i,
+                    book_list[i].book_name, book_list[i].auth_name,
+                    book_list[i].publ_name);
+            }
+        }
+
+    }
